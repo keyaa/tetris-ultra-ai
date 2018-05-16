@@ -10,6 +10,7 @@ def identify_piece():
 	color_x = ultra_x + 252 # determmine coordinates for identifying the next piece
 	color_y = ultra_y + 47
 
+	# RGB values of tetrominos
 	# empty (0, 25, 38)
 	T = (210, 76, 173)
 	J = (68, 100, 233)
@@ -17,10 +18,10 @@ def identify_piece():
 	S = (124, 212, 36)
 	Z = (250, 50, 90)
 	I = (50, 190, 250)
+	O = (255, 234, 76)
 
-	while (True): # all samples were empty (no piece at top of playfield)
-		# gather samples
-		sample_squares = []
+	while (True): # all samples were empty (no piece at top of playfield), wait for next occurrence
+		sample_squares = [] # gather samples
 		sample_squares.append(pyautogui.pixel(color_x+32, color_y+10))
 		sample_squares.append(pyautogui.pixel(color_x+55, color_y+10))
 		sample_squares.append(pyautogui.pixel(color_x+32, color_y+32))
@@ -39,6 +40,8 @@ def identify_piece():
 			return "Z"
 		if I in sample_squares:
 			return "I"
+		if O in sample_squares:
+			return "O"
 
 def main():
 	current_piece = "" # we don't know what the first piece is
