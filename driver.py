@@ -5,49 +5,46 @@ def orient_playfield():
 	pyautogui.click(ultra_x, ultra_y) # focus the game window, based on the logo
 	return ultra_x, ultra_y # return logo coordinates
 
-def identify_piece():
-	ultra_x, ultra_y = orient_playfield()
-	color_x = ultra_x + 252 # determmine coordinates for identifying the next piece
-	color_y = ultra_y + 47
+def get_current_state(playfield):
+	ultra_x, ultra_y = orient_playfield() # 634, 289
+	# playfield coordinates
+	x = ultra_x + 184 # 818
+	y = ultra_y + 46 # 335
 
-	# RGB values of tetrominos
+	piece_colors = {} # RGB values of tetrominos
 	# empty (0, 25, 38)
-	T = (210, 76, 173)
-	J = (68, 100, 233)
-	L = (255, 126, 37)
-	S = (124, 212, 36)
-	Z = (250, 50, 90)
-	I = (50, 190, 250)
-	O = (255, 234, 76)
+	piece_colors[(210, 76, 173)] = "T"
+	piece_colors[(68, 100, 233)] = "J"
+	piece_colors[(255, 126, 37)] = "L"
+	piece_colors[(124, 212, 36)] = "S"
+	piece_colors[(250, 50, 90)] = "Z"
+	piece_colors[(50, 190, 250)] = "I"
+	piece_colors[(255, 234, 76)] = "O"
 
-	while (True): # all samples were empty (no piece at top of playfield), wait for next occurrence
-		sample_squares = [] # gather samples
-		sample_squares.append(pyautogui.pixel(color_x+32, color_y+10))
-		sample_squares.append(pyautogui.pixel(color_x+55, color_y+10))
-		sample_squares.append(pyautogui.pixel(color_x+32, color_y+32))
-		sample_squares.append(pyautogui.pixel(color_x+55, color_y+32))
+	sample_color = (0, 0, 0)
+	while sample_color not in piece_colors.keys(): # not a valid color
+		sample_color = pyautogui.pixel(x + 102, y + 16) # resample the color square
+	
+	# testing, TODO: modify playfield to set all non-empty squares as filled
+	pyautogui.screenshot("a.png", region=(x, y, 320, 480))
 
-		# determine what piece it is based on colors of sample squares
-		if T in sample_squares:
-			return "T"
-		if J in sample_squares:
-			return "J"
-		if L in sample_squares:
-			return "L"
-		if S in sample_squares:
-			return "S"
-		if Z in sample_squares:
-			return "Z"
-		if I in sample_squares:
-			return "I"
-		if O in sample_squares:
-			return "O"
+	return piece_colors[sample_color], playfield
 
 def main():
+	playfield = [[0 for x in range(10)] for y in range(18)] # initialize playfield (10 x 18 matrix, disregard top 2 rows)
 	current_piece = "" # we don't know what the first piece is
 	if current_piece == "":
-		current_piece = identify_piece()
-	print (current_piece)
+		current_piece, playfield = get_current_state(playfield)
+
+	for i in playfield:
+		print (i)
+	
+	# pyautogui.press("c")
+	# pyautogui.press("left")
+	# pyautogui.press("right")
+	# pyautogui.press("down")
+	# pyautogui.press("up")
+	# pyautogui.press("space")
 
 if __name__=="__main__":
 	main()
