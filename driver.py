@@ -1,16 +1,46 @@
+import sys # needed to exit in case of errors
 import pyautogui # needed for keyboard actions/screenshots
+import time
 
-def orient_playfield():
-	ultra_x, ultra_y = pyautogui.locateCenterOnScreen("ultra.png") # find the ultra logo
-	pyautogui.click(ultra_x, ultra_y) # focus the game window, based on the logo
-	return ultra_x, ultra_y # return logo coordinates
+def click_start():
+	coordinates = pyautogui.locateCenterOnScreen("ultra.png") # find the ultra logo
+	if not coordinates:
+		print ("Error! Could not locate Ultra logo.")
+		sys.exit()
+	pyautogui.click(coordinates[0]+550, coordinates[1]+450) # click start button
+	return coordinates[0], coordinates[1] # return logo coordinates
 
-def get_current_state(playfield):
-	ultra_x, ultra_y = orient_playfield() # 634, 289
+def get_current_piece(ultra_x, ultra_y, piece_colors):
 	# playfield coordinates
-	x = ultra_x + 184 # 818
-	y = ultra_y + 46 # 335
 
+	sample_color = (0, 0, 0)
+	start_check = time.time() # assert that a piece is found within 30 seconds
+	while sample_color not in piece_colors.keys(): # not a valid color
+		sample_color = pyautogui.pixel(ultra_x+286, ultra_y+62) # resample the color square
+
+		if time.time() - start_check > 30: # 30 seconds exceeded (should have found a new piece at this point)
+			print ("Error! No new piece discovered after a complete cycle.")
+			sys.exit()
+	
+	return piece_colors[sample_color]
+
+def get_next_piece(ultra_x, ultra_y, piece_colors):
+	sample_color = pyautogui.pixel(ultra_x+482, ultra_y+120) # sample the next piece box
+
+	if sample_color not in piece_colors.keys():
+		sample_color = pyautogui.pixel(ultra_x+475, ultra_y+115) # I piece?
+
+	if sample_color not in piece_colors.keys():
+		sample_color = pyautogui.pixel(ultra_x+475, ultra_y+120) # O piece?
+		pyautogui.moveTo(ultra_x+475, ultra_y+120)
+
+	if sample_color not in piece_colors.keys():
+		print ("Error! Failed to identify next piece.")
+		sys.exit()
+
+	return piece_colors[sample_color]
+
+def main():
 	piece_colors = {} # RGB values of tetrominos
 	# empty (0, 25, 38)
 	piece_colors[(210, 76, 173)] = "T"
@@ -19,32 +49,31 @@ def get_current_state(playfield):
 	piece_colors[(124, 212, 36)] = "S"
 	piece_colors[(250, 50, 90)] = "Z"
 	piece_colors[(50, 190, 250)] = "I"
-	piece_colors[(255, 234, 76)] = "O"
+	piece_colors[(255, 194, 37)] = "O"
 
-	sample_color = (0, 0, 0)
-	while sample_color not in piece_colors.keys(): # not a valid color
-		sample_color = pyautogui.pixel(x + 102, y + 16) # resample the color square
-	
-	# testing, TODO: modify playfield to set all non-empty squares as filled
-	pyautogui.screenshot("a.png", region=(x, y, 320, 480))
+	ultra_x, ultra_y = click_start() # 634, 289 (start the game)
 
-	return piece_colors[sample_color], playfield
-
-def main():
 	playfield = [[0 for x in range(10)] for y in range(18)] # initialize playfield (10 x 18 matrix, disregard top 2 rows)
-	current_piece = "" # we don't know what the first piece is
-	if current_piece == "":
-		current_piece, playfield = get_current_state(playfield)
 
-	for i in playfield:
-		print (i)
+	current_piece = get_current_piece(ultra_x, ultra_y, piece_colors) # we don't know what the first piece is
+
+	game_start = time.time() # game started, goes on for 2 minutes
+
+	while (time.time() - game_start < 120): # ultra game is not over yet (120 seconds)
+		next_piece = get_next_piece(ultra_x, ultra_y, piece_colors) # next current piece is the piece in the next box
+		print ("current:", current_piece, "next:", next_piece)
+
+		pyautogui.keyDown(" ") # can't use "press", not enough time between key-down and key-up
+		time.sleep(0.1)
+		pyautogui.keyUp(" ")
+
+		current_piece = next_piece # next iteration has next piece
 	
 	# pyautogui.press("c")
 	# pyautogui.press("left")
 	# pyautogui.press("right")
 	# pyautogui.press("down")
 	# pyautogui.press("up")
-	# pyautogui.press("space")
 
 if __name__=="__main__":
 	main()
