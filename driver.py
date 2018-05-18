@@ -20,12 +20,12 @@ def T_playfield(playfield, max_depth):
 		depths.append(min(sublist[0], sublist[1], sublist[2])) # add it to the possible depths of dropping the piece
 
 	playfields = [] # possible resulting playfields
-	for row in range(8): # upright T
+	for column in range(8): # upright T
 		temp = [row[:] for row in playfield] # make a copy of the current playfield
-		temp[depths[row]][row] = 1
-		temp[depths[row]][row+1] = 1
-		temp[depths[row]-1][row+1] = 1
-		temp[depths[row]][row+2] = 1
+		temp[depths[column]][column] = 1
+		temp[depths[column]][column+1] = 1
+		temp[depths[column]-1][column+1] = 1
+		temp[depths[column]][column+2] = 1
 		playfields.append(temp)
 
 	width = 2 # width of piece
@@ -37,12 +37,12 @@ def T_playfield(playfield, max_depth):
 			min_sublist = sublist[1] + 1
 		depths.append(min_sublist) # add it to the possible depths of dropping the piece
 
-	for row in range(9): # T pointing to the right
+	for column in range(9): # T pointing to the right
 		temp = [row[:] for row in playfield] # make a copy of the current playfield
-		temp[depths[row]][row] = 1
-		temp[depths[row]-1][row] = 1
-		temp[depths[row]-2][row] = 1
-		temp[depths[row]-1][row+1] = 1
+		temp[depths[column]][column] = 1
+		temp[depths[column]-1][column] = 1
+		temp[depths[column]-2][column] = 1
+		temp[depths[column]-1][column+1] = 1
 		playfields.append(temp)
 
 	width = 3 # width of piece
@@ -56,12 +56,12 @@ def T_playfield(playfield, max_depth):
 			min_sublist = sublist[2] + 1
 		depths.append(min_sublist) # add it to the possible depths of dropping the piece
 
-	for row in range(8): # T pointing down
+	for column in range(8): # T pointing down
 		temp = [row[:] for row in playfield] # make a copy of the current playfield
-		temp[depths[row]-1][row] = 1
-		temp[depths[row]][row+1] = 1
-		temp[depths[row]-1][row+1] = 1
-		temp[depths[row]-1][row+2] = 1
+		temp[depths[column]-1][column] = 1
+		temp[depths[column]][column+1] = 1
+		temp[depths[column]-1][column+1] = 1
+		temp[depths[column]-1][column+2] = 1
 		playfields.append(temp)
 
 	width = 2 # width of piece
@@ -73,12 +73,12 @@ def T_playfield(playfield, max_depth):
 			min_sublist = sublist[0] + 1
 		depths.append(min_sublist) # add it to the possible depths of dropping the piece
 
-	for row in range(9): # T pointing to the left
+	for column in range(9): # T pointing to the left
 		temp = [row[:] for row in playfield] # make a copy of the current playfield
-		temp[depths[row]-1][row] = 1
-		temp[depths[row]][row+1] = 1
-		temp[depths[row]-1][row+1] = 1
-		temp[depths[row]-2][row+1] = 1
+		temp[depths[column]-1][column] = 1
+		temp[depths[column]][column+1] = 1
+		temp[depths[column]-1][column+1] = 1
+		temp[depths[column]-2][column+1] = 1
 		playfields.append(temp)
 	return playfields
 
@@ -90,12 +90,12 @@ def J_playfield(playfield, max_depth):
 		depths.append(min(sublist[0], sublist[1], sublist[2])) # add it to the possible depths of dropping the piece
 
 	playfields = [] # possible resulting playfields
-	for row in range(8): # horizontal J
+	for column in range(8): # horizontal J
 		temp = [row[:] for row in playfield] # make a copy of the current playfield
-		temp[depths[row]-1][row] = 1
-		temp[depths[row]][row] = 1
-		temp[depths[row]][row+1] = 1
-		temp[depths[row]][row+2] = 1
+		temp[depths[column]-1][column] = 1
+		temp[depths[column]][column] = 1
+		temp[depths[column]][column+1] = 1
+		temp[depths[column]][column+2] = 1
 		playfields.append(temp)
 
 	width = 2 # width of piece
@@ -107,12 +107,12 @@ def J_playfield(playfield, max_depth):
 			min_sublist = sublist[1] + 2
 		depths.append(min_sublist) # add it to the possible depths of dropping the piece
 
-	for row in range(9): # upside-down J
+	for column in range(9): # upside-down J
 		temp = [row[:] for row in playfield] # make a copy of the current playfield
-		temp[depths[row]][row] = 1
-		temp[depths[row]-1][row] = 1
-		temp[depths[row]-2][row] = 1
-		temp[depths[row]-2][row+1] = 1
+		temp[depths[column]][column] = 1
+		temp[depths[column]-1][column] = 1
+		temp[depths[column]-2][column] = 1
+		temp[depths[column]-2][column+1] = 1
 		playfields.append(temp)
 
 	width = 3 # width of piece
@@ -126,12 +126,12 @@ def J_playfield(playfield, max_depth):
 			min_sublist = sublist[1] + 1
 		depths.append(min_sublist) # add it to the possible depths of dropping the piece
 
-	for row in range(8): # tilted J
+	for column in range(8): # tilted J
 		temp = [row[:] for row in playfield] # make a copy of the current playfield
-		temp[depths[row]-1][row] = 1
-		temp[depths[row]-1][row+1] = 1
-		temp[depths[row]][row+2] = 1
-		temp[depths[row]-1][row+2] = 1
+		temp[depths[column]-1][column] = 1
+		temp[depths[column]-1][column+1] = 1
+		temp[depths[column]][column+2] = 1
+		temp[depths[column]-1][column+2] = 1
 		playfields.append(temp)
 
 	width = 2 # width of piece
@@ -140,12 +140,12 @@ def J_playfield(playfield, max_depth):
 		sublist = max_depth[i:i+(width)] # check spaces that are [width] wide
 		depths.append(min(sublist[0], sublist[1])) # add it to the possible depths of dropping the piece
 
-	for row in range(9): # upright J
+	for column in range(9): # upright J
 		temp = [row[:] for row in playfield] # make a copy of the current playfield
-		temp[depths[row]][row] = 1
-		temp[depths[row]][row+1] = 1
-		temp[depths[row]-1][row+1] = 1
-		temp[depths[row]-2][row+1] = 1
+		temp[depths[column]][column] = 1
+		temp[depths[column]][column+1] = 1
+		temp[depths[column]-1][column+1] = 1
+		temp[depths[column]-2][column+1] = 1
 		playfields.append(temp)
 	return playfields
 
@@ -157,12 +157,12 @@ def L_playfield(playfield, max_depth):
 		depths.append(min(sublist[0], sublist[1], sublist[2])) # add it to the possible depths of dropping the piece
 
 	playfields = [] # possible resulting playfields
-	for row in range(8): # horizontal L
+	for column in range(8): # horizontal L
 		temp = [row[:] for row in playfield] # make a copy of the current playfield
-		temp[depths[row]][row] = 1
-		temp[depths[row]][row+1] = 1
-		temp[depths[row]][row+2] = 1
-		temp[depths[row]-1][row+2] = 1
+		temp[depths[column]][column] = 1
+		temp[depths[column]][column+1] = 1
+		temp[depths[column]][column+2] = 1
+		temp[depths[column]-1][column+2] = 1
 		playfields.append(temp)
 
 	width = 2 # width of piece
@@ -171,12 +171,12 @@ def L_playfield(playfield, max_depth):
 		sublist = max_depth[i:i+(width)] # check spaces that are [width] wide
 		depths.append(min(sublist[0], sublist[1])) # add it to the possible depths of dropping the piece
 
-	for row in range(9): # upright L
+	for column in range(9): # upright L
 		temp = [row[:] for row in playfield] # make a copy of the current playfield
-		temp[depths[row]][row] = 1
-		temp[depths[row]-1][row] = 1
-		temp[depths[row]-2][row] = 1
-		temp[depths[row]][row+1] = 1
+		temp[depths[column]][column] = 1
+		temp[depths[column]-1][column] = 1
+		temp[depths[column]-2][column] = 1
+		temp[depths[column]][column+1] = 1
 		playfields.append(temp)
 
 	width = 3 # width of piece
@@ -190,12 +190,12 @@ def L_playfield(playfield, max_depth):
 			min_sublist = sublist[2] + 1
 		depths.append(min_sublist) # add it to the possible depths of dropping the piece
 
-	for row in range(8): # tilted L
+	for column in range(8): # tilted L
 		temp = [row[:] for row in playfield] # make a copy of the current playfield
-		temp[depths[row]][row] = 1
-		temp[depths[row]-1][row] = 1
-		temp[depths[row]-1][row+1] = 1
-		temp[depths[row]-1][row+2] = 1
+		temp[depths[column]][column] = 1
+		temp[depths[column]-1][column] = 1
+		temp[depths[column]-1][column+1] = 1
+		temp[depths[column]-1][column+2] = 1
 		playfields.append(temp)
 
 	width = 2 # width of piece
@@ -207,12 +207,12 @@ def L_playfield(playfield, max_depth):
 			min_sublist = sublist[0] + 2
 		depths.append(min_sublist) # add it to the possible depths of dropping the piece
 
-	for row in range(9): # upside-down L
+	for column in range(9): # upside-down L
 		temp = [row[:] for row in playfield] # make a copy of the current playfield
-		temp[depths[row]-2][row] = 1
-		temp[depths[row]][row+1] = 1
-		temp[depths[row]-1][row+1] = 1
-		temp[depths[row]-2][row+1] = 1
+		temp[depths[column]-2][column] = 1
+		temp[depths[column]][column+1] = 1
+		temp[depths[column]-1][column+1] = 1
+		temp[depths[column]-2][column+1] = 1
 		playfields.append(temp)
 	return playfields
 
@@ -227,12 +227,12 @@ def S_playfield(playfield, max_depth):
 		depths.append(min_sublist) # add it to the possible depths of dropping the piece
 
 	playfields = [] # possible resulting playfields
-	for row in range(8): # horizontal S
+	for column in range(8): # horizontal S
 		temp = [row[:] for row in playfield] # make a copy of the current playfield
-		temp[depths[row]][row] = 1
-		temp[depths[row]][row+1] = 1
-		temp[depths[row]-1][row+1] = 1
-		temp[depths[row]-1][row+2] = 1
+		temp[depths[column]][column] = 1
+		temp[depths[column]][column+1] = 1
+		temp[depths[column]-1][column+1] = 1
+		temp[depths[column]-1][column+2] = 1
 		playfields.append(temp)
 
 	width = 2 # width of piece
@@ -244,12 +244,12 @@ def S_playfield(playfield, max_depth):
 			min_sublist = sublist[0] + 1
 		depths.append(min_sublist) # add it to the possible depths of dropping the piece
 
-	for row in range(9): # vertical S
+	for column in range(9): # vertical S
 		temp = [row[:] for row in playfield] # make a copy of the current playfield
-		temp[depths[row]-1][row] = 1
-		temp[depths[row]-2][row] = 1
-		temp[depths[row]][row+1] = 1
-		temp[depths[row]-1][row+1] = 1
+		temp[depths[column]-1][column] = 1
+		temp[depths[column]-2][column] = 1
+		temp[depths[column]][column+1] = 1
+		temp[depths[column]-1][column+1] = 1
 		playfields.append(temp)
 	return playfields
 
@@ -264,12 +264,12 @@ def Z_playfield(playfield, max_depth):
 		depths.append(min_sublist) # add it to the possible depths of dropping the piece
 
 	playfields = [] # possible resulting playfields
-	for row in range(8): # horizontal Z
+	for column in range(8): # horizontal Z
 		temp = [row[:] for row in playfield] # make a copy of the current playfield
-		temp[depths[row]-1][row] = 1
-		temp[depths[row]-1][row+1] = 1
-		temp[depths[row]][row+1] = 1
-		temp[depths[row]][row+2] = 1
+		temp[depths[column]-1][column] = 1
+		temp[depths[column]-1][column+1] = 1
+		temp[depths[column]][column+1] = 1
+		temp[depths[column]][column+2] = 1
 		playfields.append(temp)
 
 	width = 2 # width of piece
@@ -281,12 +281,12 @@ def Z_playfield(playfield, max_depth):
 			min_sublist = sublist[1] + 1
 		depths.append(min_sublist) # add it to the possible depths of dropping the piece
 
-	for row in range(9): # vertical Z
+	for column in range(9): # vertical Z
 		temp = [row[:] for row in playfield] # make a copy of the current playfield
-		temp[depths[row]][row] = 1
-		temp[depths[row]-1][row] = 1
-		temp[depths[row]-1][row+1] = 1
-		temp[depths[row]-2][row+1] = 1
+		temp[depths[column]][column] = 1
+		temp[depths[column]-1][column] = 1
+		temp[depths[column]-1][column+1] = 1
+		temp[depths[column]-2][column+1] = 1
 		playfields.append(temp)
 	return playfields
 
@@ -298,19 +298,19 @@ def I_playfield(playfield, max_depth):
 		depths.append(min(sublist[0], sublist[1], sublist[2], sublist[3])) # add it to the possible depths of dropping the piece
 
 	playfields = [] # possible resulting playfields
-	for row in range(7): # horizontal I
+	for column in range(7): # horizontal I
 		temp = [row[:] for row in playfield] # make a copy of the current playfield
-		temp[depths[row]][row] = 1
-		temp[depths[row]][row+1] = 1
-		temp[depths[row]][row+2] = 1
-		temp[depths[row]][row++3] = 1
+		temp[depths[column]][column] = 1
+		temp[depths[column]][column+1] = 1
+		temp[depths[column]][column+2] = 1
+		temp[depths[column]][column+3] = 1
 		playfields.append(temp)
-	for row in range(10): # vertical I
+	for column in range(10): # vertical I
 		temp = [row[:] for row in playfield] # make a copy of the current playfield
-		temp[max_depth[row]][row] = 1
-		temp[max_depth[row]-1][row] = 1
-		temp[max_depth[row]-2][row] = 1
-		temp[max_depth[row]-3][row] = 1
+		temp[max_depth[column]][column] = 1
+		temp[max_depth[column]-1][column] = 1
+		temp[max_depth[column]-2][column] = 1
+		temp[max_depth[column]-3][column] = 1
 		playfields.append(temp)
 	return playfields
 
@@ -322,12 +322,12 @@ def O_playfield(playfield, max_depth):
 		depths.append(min(sublist[0], sublist[1])) # add it to the possible depths of dropping the piece
 
 	playfields = [] # possible resulting playfields
-	for row in range(9):
+	for column in range(9):
 		temp = [row[:] for row in playfield] # make a copy of the current playfield
-		temp[depths[row]][row] = 1
-		temp[depths[row]][row+1] = 1
-		temp[depths[row]-1][row] = 1
-		temp[depths[row]-1][row+1] = 1
+		temp[depths[column]][column] = 1
+		temp[depths[column]][column+1] = 1
+		temp[depths[column]-1][column] = 1
+		temp[depths[column]-1][column+1] = 1
 		playfields.append(temp)
 	return playfields
 
@@ -339,10 +339,10 @@ def get_possible_playfields(current_piece, playfield): # must return a list of p
 	# "I": 7 no-rotates, 10 one-rotates
 	# "J", "L", "T": 8 no-rotates, 9 one-rotates, 8 two-rotates, 9 z-rotates
 	max_depth = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1] # depth of each row
-	for row in range(10): # for every row
-		for column in range(20): # see how far deep a piece may be placed
-			if playfield[column][row] == " ": # if it's empty space
-				max_depth[row] += 1 # we can place it further down
+	for column in range(10): # for every row
+		for row in range(20): # see how far deep a piece may be placed
+			if playfield[row][column] == " ": # if it's empty space
+				max_depth[column] += 1 # we can place it further down
 			else: # otherwise, we get stopped
 				break
 	playfield_function = playfield_functions[current_piece]
@@ -362,10 +362,10 @@ def print_playfield(playfield): # prints the current playfield nicely
 	for i in range(10):
 		print (i, end="_")
 	print()
-	for column in range(20):
-		for row in range(10):
-			print (playfield[column][row], end=" ")
-		print ("|", column)
+	for row in range(20):
+		for column in range(10):
+			print (playfield[row][column], end=" ")
+		print ("|", row)
 	print()
 
 # all possible movesets for each piece
@@ -538,16 +538,33 @@ def moveset_maker(current_piece, index_of_best):
 	return moveset_dict[index_of_best]
 
 def utility(playfield): # returns the utility score of a certain playfield
-	return 0	
-
-def update_playfield(playfield): # remove cleared lines
-	for column in range(20):
+	complete_lines = 0
+	for row in range(20):
 		line_complete = True # assume the row is complete
-		for row in range(10):
-			if playfield[column][row] != 1:
+		for column in range(10):
+			if playfield[row][column] != 1:
 				line_complete = False
 		if line_complete: # line cleared, shift everything up by 1
-			pass
+			complete_lines += 1
+
+	print ("complete lines:", complete_lines)
+	return 0
+
+def update_playfield(playfield): # remove cleared lines
+	for row in range(20):
+		line_complete = True # assume the row is complete
+		for column in range(10):
+			if row == 0 or row == 1:
+				if playfield[row][column] == 1:
+					print ("Pieces have reached top level, game over!")
+					sys.exit()
+			if playfield[row][column] != 1:
+				line_complete = False
+		if line_complete: # line cleared, shift everything down by 1
+			# must count down (going from the bottom up)
+			for row2 in range(row, -1, -1): # starting from the cleared line
+				for column2 in range(10):
+					playfield[row2][column2] = playfield[row2-1][column2] # everything above it comes down by 1
 	return playfield
 
 def get_best_moves(current_piece, playfield): # generate possible resulting playfields and return best moves
@@ -561,7 +578,7 @@ def get_best_moves(current_piece, playfield): # generate possible resulting play
 	return moveset_maker(current_piece, best_utility), playfields[best_utility]
 
 def main():
-	playfield = [[" " for row in range(10)] for column in range(20)] # initialize playfield (10 x 20 matrix)
+	playfield = [[" " for column in range(10)] for row in range(20)] # initialize playfield (10 x 20 matrix)
 	input("Center mouse on upper squares. Press [Enter] when ready.")
 	ultra_x, ultra_y = (pyautogui.position()) # set current piece detection position
 	print ("Piece detection position set at: (", ultra_x, ", ", ultra_y, ")", sep="")
@@ -578,7 +595,7 @@ def main():
 			pyautogui.keyUp(move)
 		pyautogui.keyDown(" ") # drop the piece after positioning it optimally
 		pyautogui.keyUp(" ")
-		# playfield = update_playfield(playfield) # clear completed lines @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+		playfield = update_playfield(playfield) # clear completed lines
 		current_piece = get_current_piece(ultra_x, ultra_y) # get the next piece to play
 	
 if __name__=="__main__":
