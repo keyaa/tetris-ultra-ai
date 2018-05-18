@@ -538,33 +538,63 @@ def moveset_maker(current_piece, index_of_best):
 	return moveset_dict[index_of_best]
 
 def utility(playfield): # returns the utility score of a certain playfield
+	height = [20, 20, 20, 20, 20, 20, 20, 20, 20, 20]
 	complete_lines = 0
+	right_side_open = 1
+	holes = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0] # number of empty squares with blocks above it in a column
+	# iterate through the playfield for scoring
 	for row in range(20):
 		line_complete = True # assume the row is complete
 		for column in range(10):
-			if playfield[row][column] != 1:
+			if playfield[row][column] != 1: # empty
 				line_complete = False
+				if height[column] != 20: # if column was sealed
+					holes[column] += 1 # +1 hole count
+			else: # there is a block there
+				if height[column] == 20: # we can now define the height
+					height[column] = row
+				if column == 9: # right-hand column isn't empty
+					right_side_open = 0
 		if line_complete: # line cleared, shift everything up by 1
 			complete_lines += 1
 
-	print ("complete lines:", complete_lines)
-	return 0
+	height_difference = [abs(height[i+1]-height[i]) for i in range(len(height)-1)] # list of differences in heights
+
+	if right_side_open == 0: # if the right side wasn't open
+		if complete_lines == 4:
+			right_side_open = 10000 # reward for making a Tetris
+		else:
+			right_side_open = -1000 # penalty for not keeping right side open
+	else: # right side is open
+		right_side_open = 200
+	
+	# debugging prints @@@@
+	# print_playfield(playfield)
+	# print ("Right side open?", right_side_open)
+	# print ("complete lines:", complete_lines)
+	# print ("holes:", holes)
+	# print ("height", height)
+	# print ("height diff", height_difference)
+	# print ("final score:", 100 + (-200)*sum(holes) + (50)*complete_lines + (-100)*sum(height_difference) + right_side_open)
+	# print ()
+
+	return ((-2000)*sum(holes) + (50)*complete_lines + (-300)*sum(height_difference) + right_side_open)
 
 def update_playfield(playfield): # remove cleared lines
 	for row in range(20):
 		line_complete = True # assume the row is complete
 		for column in range(10):
-			if row == 0 or row == 1:
-				if playfield[row][column] == 1:
-					print ("Pieces have reached top level, game over!")
-					sys.exit()
 			if playfield[row][column] != 1:
 				line_complete = False
 		if line_complete: # line cleared, shift everything down by 1
 			# must count down (going from the bottom up)
-			for row2 in range(row, -1, -1): # starting from the cleared line
+			for row2 in range(row, 0, -1): # starting from the cleared line
 				for column2 in range(10):
 					playfield[row2][column2] = playfield[row2-1][column2] # everything above it comes down by 1
+	for column in range(10):
+		if playfield[0][column] == 1:
+			print ("Pieces have reached top level, game over!")
+			sys.exit()
 	return playfield
 
 def get_best_moves(current_piece, playfield): # generate possible resulting playfields and return best moves
