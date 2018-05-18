@@ -12,21 +12,142 @@ piece_colors[(250, 50, 90)] = "Z"
 piece_colors[(50, 190, 250)] = "I"
 piece_colors[(255, 194, 37)] = "O"
 
-def T_playfield(playfield):
-	temp = [row[:] for row in playfield] # make a copy of the current playfield
-def J_playfield(playfield):
-	temp = [row[:] for row in playfield] # make a copy of the current playfield
-def L_playfield(playfield):
-	temp = [row[:] for row in playfield] # make a copy of the current playfield
-def S_playfield(playfield):
-	temp = [row[:] for row in playfield] # make a copy of the current playfield
-def Z_playfield(playfield):
-	temp = [row[:] for row in playfield] # make a copy of the current playfield
-def I_playfield(playfield):
-	temp = [row[:] for row in playfield] # make a copy of the current playfield
+def T_playfield(playfield, max_depth):
+	width = 3 # width of piece
+	depths = []
+	for i in range(len(max_depth)-width+1): # go through the depths, creating sublists that are the piece width
+		sublist = max_depth[i:i+(width)]
+		min_sublist = 20
+		for j in sublist: # "T" horizontally is a flat surface, find min of each depth as placement boundary
+			if j < min_sublist:
+				min_sublist = j
+		depths.append(min_sublist) # add it to the possible depths of dropping the piece
 
-def O_playfield(playfield): # TODO @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ all of these different playfields
-	temp = [row[:] for row in playfield] # make a copy of the current playfield
+	playfields = [] # possible resulting playfields
+	for row in range(8): # horizontal T
+		temp = [row[:] for row in playfield] # make a copy of the current playfield
+		temp[depths[row]][row] = 1
+		temp[depths[row]][row+1] = 1
+		temp[depths[row]-1][row+1] = 1
+		temp[depths[row]][row+2] = 1
+		playfields.append(temp)
+
+	# TODO: >
+	# TODO: v
+	# TODO: <
+
+def J_playfield(playfield, max_depth):
+	width = 3 # width of piece
+	depths = []
+	for i in range(len(max_depth)-width+1): # go through the depths, creating sublists that are the piece width
+		sublist = max_depth[i:i+(width)]
+		min_sublist = 20
+		for j in sublist: # "J" horizontally is a flat surface, find min of each depth as placement boundary
+			if j < min_sublist:
+				min_sublist = j
+		depths.append(min_sublist) # add it to the possible depths of dropping the piece
+
+	playfields = [] # possible resulting playfields
+	for row in range(8): # horizontal J
+		temp = [row[:] for row in playfield] # make a copy of the current playfield
+		temp[depths[row]-1][row] = 1
+		temp[depths[row]][row] = 1
+		temp[depths[row]][row+1] = 1
+		temp[depths[row]][row+2] = 1
+		playfields.append(temp)
+
+	# TODO: upside down J
+	#        _____
+	# TODO:      |   backwards gun
+	#
+	#          |
+	# TODO:  _|   upright
+
+def L_playfield(playfield, max_depth):
+	width = 3 # width of piece
+	depths = []
+	for i in range(len(max_depth)-width+1): # go through the depths, creating sublists that are the piece width
+		sublist = max_depth[i:i+(width)]
+		min_sublist = 20
+		for j in sublist: # "L" horizontally is a flat surface, find min of each depth as placement boundary
+			if j < min_sublist:
+				min_sublist = j
+		depths.append(min_sublist) # add it to the possible depths of dropping the piece
+
+	playfields = [] # possible resulting playfields
+	for row in range(8): # horizontal L
+		temp = [row[:] for row in playfield] # make a copy of the current playfield
+		temp[depths[row]][row] = 1
+		temp[depths[row]][row+1] = 1
+		temp[depths[row]][row+2] = 1
+		temp[depths[row]-1][row+2] = 1
+		playfields.append(temp)
+
+	# TODO: upright L
+	#        _____
+	# TODO: |
+	# TODO: upside down L
+
+def S_playfield(playfield, max_depth):
+	pass
+def Z_playfield(playfield, max_depth):
+	pass
+def I_playfield(playfield, max_depth):
+	width = 4 # width of piece
+	depths = []
+	for i in range(len(max_depth)-width+1): # go through the depths, creating sublists that are the piece width
+		sublist = max_depth[i:i+(width)]
+		min_sublist = 20
+		for j in sublist: # "I" horizontally is a flat surface, find min of each depth as placement boundary
+			if j < min_sublist:
+				min_sublist = j
+		depths.append(min_sublist) # add it to the possible depths of dropping the piece
+
+	playfields = [] # possible resulting playfields
+	for row in range(7): # horizontal I
+		temp = [row[:] for row in playfield] # make a copy of the current playfield
+		temp[depths[row]][row] = 1
+		temp[depths[row]][row+1] = 1
+		temp[depths[row]][row+2] = 1
+		temp[depths[row]][row++3] = 1
+		playfields.append(temp)
+	for row in range(10): # vertical I
+		temp = [row[:] for row in playfield] # make a copy of the current playfield
+		temp[max_depth[row]][row] = 1
+		temp[max_depth[row]-1][row] = 1
+		temp[max_depth[row]-2][row] = 1
+		temp[max_depth[row]-3][row] = 1
+		playfields.append(temp)
+	return playfields
+
+def O_playfield(playfield, max_depth):
+	width = 2 # width of piece
+	depths = []
+	for i in range(len(max_depth)-width+1): # go through the depths, creating sublists that are the piece width
+		sublist = max_depth[i:i+(width)]
+		min_sublist = 20
+		for j in sublist: # "O" is a flat surface, find min of each depth as placement boundary
+			if j < min_sublist:
+				min_sublist = j
+		depths.append(min_sublist) # add it to the possible depths of dropping the piece
+
+	playfields = [] # possible resulting playfields
+	for row in range(9):
+		temp = [row[:] for row in playfield] # make a copy of the current playfield
+		temp[depths[row]][row] = 1
+		temp[depths[row]][row+1] = 1
+		temp[depths[row]-1][row] = 1
+		temp[depths[row]-1][row+1] = 1
+		playfields.append(temp)
+	return playfields
+
+playfield_functions = {"T":T_playfield, "J":J_playfield, "L":L_playfield, "S":S_playfield, "Z":Z_playfield, "I":I_playfield, "O":O_playfield}
+
+def get_possible_playfields(current_piece, playfield): # must return a list of posssible potential playfields
+	# "O": 9 no-rotates
+	# "S", "Z": 8 no-rotates, 9 one-rotates
+	# "I": 7 no-rotates, 10 one-rotates
+	# "J", "L", "T": 8 no-rotates, 9 one-rotates, 8 two-rotates, 9 z-rotates
 
 	max_depth = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1] # depth of each row
 	for row in range(10): # for every row
@@ -36,17 +157,12 @@ def O_playfield(playfield): # TODO @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 			else: # otherwise, we get stopped
 				break
 
-	width = 2 # width of piece
-	depths = []
-	for i in range(len(max_depth)-width+1): # go through the depths, creating sublists that are the piece width
-		sublist = max_depth[i:i+(width)]
-		depths.append(sublist) # add it to the possible depths of dropping the piece
-	print (depths)
-
-playfield_functions = {"T":T_playfield, "J":J_playfield, "L":L_playfield, "S":S_playfield, "Z":Z_playfield, "I":I_playfield, "O":O_playfield}
-
-def get_possible_playfields(current_piece, playfield): # must return a list of posssible potential playfields
 	playfield_function = playfield_functions[current_piece]
+	# playfield_function(playfield, max_depth)
+
+	# get rid of this later
+	for i in playfield_function(playfield, max_depth):
+		print_playfield(i)
 
 def get_current_piece(ultra_x, ultra_y): 
 	sample_color = (-1, -1, -1) # we don't know what color the piece is yet
@@ -66,15 +182,12 @@ def print_playfield(playfield): # prints the current playfield nicely
 		for row in range(10):
 			print (playfield[column][row], end=" ")
 		print ("|", column)
+	print()
 
 def utility(playfield): # returns the utility score of a certain playfield
 	return 1
 
 def get_best_moves(current_piece, playfield): # generate possible resulting playfields and return best moves
-	# "O": 9 no-rotates
-	# "S", "Z": 8 no-rotates, 9 one-rotates
-	# "I": 7 no-rotates, 10 one-rotates
-	# "J", "L", "T": 8 no-rotates, 9 one-rotates, 8 two-rotates, 9 z-rotates
 
 	playfields = get_possible_playfields(current_piece, playfield) # given current playfield and piece, return list of potential results
 
