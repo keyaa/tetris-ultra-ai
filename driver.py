@@ -353,8 +353,8 @@ def get_current_piece(ultra_x, ultra_y):
 	start_check = time.time() # assert that a piece is found within 30 seconds
 	while sample_color not in piece_colors.keys(): # not a valid color
 		sample_color = pyautogui.pixel(ultra_x, ultra_y) # resample the color square
-		if time.time() - start_check > 5: # 5 seconds exceeded (should have found a new piece at this point)
-			print ("Error! No new piece discovered, mouse placement invalid.")
+		if time.time() - start_check > 4: # 4 seconds exceeded (should have found a new piece at this point)
+			print ("No new piece discovered, game over.")
 			sys.exit()
 	return piece_colors[sample_color]
 
@@ -559,26 +559,39 @@ def utility(playfield): # returns the utility score of a certain playfield
 			complete_lines += 1
 
 	height_difference = [abs(height[i+1]-height[i]) for i in range(len(height)-1)] # list of differences in heights
+	height_difference = height_difference[:-1] # ignore the last column sharp difference (we're intentionally keeping right side empty)
+
+	hd_score = 0
+	for hd in height_difference:
+		if hd > 3:
+			hd_score += 10 * hd
+		else:
+			hd_score += hd
+
+	height_score = 0
+	for h in height: # go through each column's height
+		if h <= 14: # filter out those that are 5 or less tall (for Tetris setup)
+			height_score += (20 - h)
 
 	if right_side_open == 0: # if the right side wasn't open
 		if complete_lines == 4:
 			right_side_open = 10000 # reward for making a Tetris
 		else:
-			right_side_open = -1000 # penalty for not keeping right side open
+			right_side_open = -500 # penalty for not keeping right side open
 	else: # right side is open
 		right_side_open = 200
 	
-	# debugging prints @@@@
-	# print_playfield(playfield)
-	# print ("Right side open?", right_side_open)
-	# print ("complete lines:", complete_lines)
-	# print ("holes:", holes)
-	# print ("height", height)
-	# print ("height diff", height_difference)
-	# print ("final score:", 100 + (-200)*sum(holes) + (50)*complete_lines + (-100)*sum(height_difference) + right_side_open)
-	# print ()
+	# if complete_lines > 0:
+	# 	# debugging prints @@@@
+	# 	print_playfield(playfield)
+	# 	print ("Right side open?", right_side_open)
+	# 	print ("complete lines:", complete_lines)
+	# 	print ("holes:", holes)
+	# 	print ("height", height)
+	# 	print ("height diff", height_difference)
+	# 	print ()
 
-	return ((-2000)*sum(holes) + (50)*complete_lines + (-300)*sum(height_difference) + right_side_open)
+	return ((-4000)*sum(holes) + (50)*complete_lines + (-200)*height_score + (-40)*hd_score + right_side_open)
 
 def update_playfield(playfield): # remove cleared lines
 	for row in range(20):
@@ -595,9 +608,10 @@ def update_playfield(playfield): # remove cleared lines
 		if playfield[0][column] == 1:
 			print ("Pieces have reached top level, game over!")
 			sys.exit()
+	print_playfield(playfield)
 	return playfield
 
-def get_best_moves(current_piece, playfield): # generate possible resulting playfields and return best moves
+def get_best_moves(current_piece, playfield, hold): # generate possible resulting playfields and return best moves
 	playfields = get_possible_playfields(current_piece, playfield) # given current playfield and piece, return list of potential results
 	# call utility function on each resulting playfield, assign score, choose playfield with best score
 	utilities = [] # scores assigned to each playfield
@@ -605,9 +619,17 @@ def get_best_moves(current_piece, playfield): # generate possible resulting play
 		utilities.append(utility(playfield))
 	# translate current piece + best playfield's index into a moveset, given index of max utility playfield
 	best_utility = utilities.index(max(utilities))
-	return moveset_maker(current_piece, best_utility), playfields[best_utility]
+
+	# TODO: implement hold function
+	# if hold == True: # can use hold
+	# 	if best_utility <= 4:
+	# 		return ["c"], playfield, False # can not use hold for 1 turn
+
+	print ("score:", best_utility)
+	return moveset_maker(current_piece, best_utility), playfields[best_utility], True # can use hold again
 
 def main():
+	hold = True # can use hold as a move, nothing currently there
 	playfield = [[" " for column in range(10)] for row in range(20)] # initialize playfield (10 x 20 matrix)
 	input("Center mouse on upper squares. Press [Enter] when ready.")
 	ultra_x, ultra_y = (pyautogui.position()) # set current piece detection position
@@ -619,13 +641,14 @@ def main():
 	game_start = time.time() # game started, goes on for 2 minutes
 	while (time.time() - game_start < 120): # ultra game is not over yet (120 seconds)
 		# piece placement decision logic
-		best_moves, playfield = get_best_moves(current_piece, playfield)
+		best_moves, playfield, hold = get_best_moves(current_piece, playfield, hold)
 		for move in best_moves: # execute best string of moves
 			pyautogui.keyDown(move)
 			pyautogui.keyUp(move)
-		pyautogui.keyDown(" ") # drop the piece after positioning it optimally
-		pyautogui.keyUp(" ")
-		playfield = update_playfield(playfield) # clear completed lines
+		if hold:
+			pyautogui.keyDown(" ") # drop the piece after positioning it optimally
+			pyautogui.keyUp(" ")
+			playfield = update_playfield(playfield) # clear completed lines
 		current_piece = get_current_piece(ultra_x, ultra_y) # get the next piece to play
 	
 if __name__=="__main__":
